@@ -10,7 +10,7 @@ import it.unibo.deathnote.api.DeathNote;
 
 public class DeathNoteImplementation implements DeathNote{
 
-    private Map<String,List<String>> deathnote = new HashMap<>();
+    private Map<<K>,List<V>> deathnote = new HashMap<>();
     private long timer;
     private static final long CAUSE_TIMER = 40; 
 
