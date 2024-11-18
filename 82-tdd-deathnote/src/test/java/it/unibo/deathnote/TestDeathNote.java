@@ -15,7 +15,7 @@ import it.unibo.deathnote.impl.DeathNoteImplementation;
 import it.unibo.deathnote.impl.DeathNoteImplementation.LastDeath;
 
 class TestDeathNote {
-    private DeathNoteImplementation<String,LastDeath> deathnote = new DeathNoteImplementation<>();
+    private DeathNoteImplementation deathnote = new DeathNoteImplementation();
 
     /**
      * Tests that rule number 0 and negative rules do not exist.

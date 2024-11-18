@@ -11,9 +11,9 @@ import com.sun.source.tree.CaseTree;
 
 import it.unibo.deathnote.api.DeathNote;
 
-public class DeathNoteImplementation<K,V> implements DeathNote{
+public class DeathNoteImplementation implements DeathNote{
 
-    private Map<String,LastDeath> deathnote = new HashMap<>();
+    private final Map<String,LastDeath> deathnote = new HashMap<>();
     private long timer;
     private String lastNameWritten;
     private static final long CAUSE_TIMER = 40; 
@@ -66,7 +66,7 @@ public class DeathNoteImplementation<K,V> implements DeathNote{
 
     @Override
     public boolean writeDeathCause(String cause) {
-        if(deathnote.isEmpty() || cause.equals(null)){
+        if(deathnote.isEmpty() || cause == null){
             throw new IllegalStateException("invalid deathnote or cause");
         }
         if((System.currentTimeMillis() - this.timer) < CAUSE_TIMER){
@@ -81,7 +81,7 @@ public class DeathNoteImplementation<K,V> implements DeathNote{
 
     @Override
     public boolean writeDetails(String details) {
-        if(deathnote.isEmpty() || details.equals(null)){
+        if(deathnote.isEmpty() || details == null){
             throw new IllegalStateException("invalid deathnote or details");
         }
         if((System.currentTimeMillis() - this.timer) < DETAILS_TIMER){
@@ -95,7 +95,7 @@ public class DeathNoteImplementation<K,V> implements DeathNote{
 
     @Override
     public void writeName(String name) {
-        if(name.equals(null)){
+        if(name == null){
             throw new NullPointerException("name null");
         }
         this.deathnote.put(name, new LastDeath());
