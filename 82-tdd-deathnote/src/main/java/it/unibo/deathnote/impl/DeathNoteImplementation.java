@@ -1,29 +1,50 @@
 package it.unibo.deathnote.impl;
 
+import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.sun.source.tree.CaseTree;
+
 import it.unibo.deathnote.api.DeathNote;
 
-public class DeathNoteImplementation implements DeathNote{
+public class DeathNoteImplementation<K,V> implements DeathNote{
 
-    private Map<<K>,List<V>> deathnote = new HashMap<>();
+    private Map<String,LastDeath> deathnote = new HashMap<>();
     private long timer;
+    private String lastNameWritten;
     private static final long CAUSE_TIMER = 40; 
+    private static final long DETAILS_TIMER = 6040; 
 
     @Override
     public String getDeathCause(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        if(this.deathnote.containsKey(name)){
+            String cause = deathnote.get(name).getLastDeathCause();
+            if(cause == null){
+                return "heart attack";
+            }
+            return cause;
+        }
+        else{
+            throw new IllegalArgumentException("inexistent name");
+        }
     }
 
     @Override
     public String getDeathDetails(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        if(this.deathnote.containsKey(name)){
+            String detail = deathnote.get(name).getLastDeathDetail();
+            if(detail == null){
+                return "";
+            }
+            return detail;
+        }
+        else{
+            throw new IllegalArgumentException("inexistent name");
+        }
     }
 
     @Override
@@ -37,7 +58,9 @@ public class DeathNoteImplementation implements DeathNote{
 
     @Override
     public boolean isNameWritten(String name) {
-        // TODO Auto-generated method stub
+        if(this.deathnote.containsKey(name)){
+            return true;
+        }
         return false;
     }
 
@@ -46,7 +69,9 @@ public class DeathNoteImplementation implements DeathNote{
         if(deathnote.isEmpty() || cause.equals(null)){
             throw new IllegalStateException("invalid deathnote or cause");
         }
-        if((System.currentTimeMillis() - timer) < CAUSE_TIMER){
+        if((System.currentTimeMillis() - this.timer) < CAUSE_TIMER){
+            deathnote.get(this.lastNameWritten).setLastDeathCause(cause);
+            this.timer = System.currentTimeMillis();
             return true;
         }
         else{
@@ -56,8 +81,16 @@ public class DeathNoteImplementation implements DeathNote{
 
     @Override
     public boolean writeDetails(String details) {
-        // TODO Auto-generated method stub
-        return false;
+        if(deathnote.isEmpty() || details.equals(null)){
+            throw new IllegalStateException("invalid deathnote or details");
+        }
+        if((System.currentTimeMillis() - this.timer) < DETAILS_TIMER){
+            deathnote.get(this.lastNameWritten).setLastDeathDetail(details);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
@@ -65,9 +98,32 @@ public class DeathNoteImplementation implements DeathNote{
         if(name.equals(null)){
             throw new NullPointerException("name null");
         }
-        deathnote.put(name, new ArrayList<>());
+        this.deathnote.put(name, new LastDeath());
+        this.lastNameWritten = name;
         this.timer = System.currentTimeMillis();
     }
 
-    
+    //fare un inner classe per fare degli oggetti ultimo morto in modo da inserire in tabella direttamente il morto con le sue informazioni relative
+    public class LastDeath{
+        private String lastDeathCause;
+        private String lastDeathDetail;
+
+        public LastDeath(){
+            this.lastDeathCause = null;
+            this.lastDeathDetail = null;
+        }
+        public String getLastDeathCause() {
+            return lastDeathCause;
+        }
+        public void setLastDeathCause(String lastDeathCause) {
+            this.lastDeathCause = lastDeathCause;
+        }
+        public String getLastDeathDetail() {
+            return lastDeathDetail;
+        }
+        public void setLastDeathDetail(String lastDeathDetail) {
+            this.lastDeathDetail = lastDeathDetail;
+        }
+        
+    }
 }
